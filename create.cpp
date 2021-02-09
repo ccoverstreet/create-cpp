@@ -56,31 +56,38 @@ int main(int argc, char** argv) {
   wchar_t space[width - 3];
 
   // Author line
-  wchar_t authorLine[width - 3];
+  wchar_t authorLine[width + 5];
   spacing = width - 4 - strlen("Author:Kuba Zeligowski");
 
+  wmemset(space, 0, width - 3);
   wmemset(space, L' ', spacing);
   wcscpy(authorLine, L"Author:");
-  fwprintf(fout, L"|%ls|\r\n", space);
-  fwprintf(fout, L"|%ls|\r\n", authorLine);
   wcscat(authorLine, space);
   wcscat(authorLine, L"Kuba Zeligowski");
 
+  wprintf(L"|%ls|\n", authorLine);
+
   // Date line
-  wchar_t dateLine[width - 3];
-  wchar_t date[strlen("mmm dd, YYYY")];
-  spacing = width - 4 - strlen("Date:mmm dd, YYYY");
+  wchar_t dateLine[width + 3];
+  wchar_t date[strlen("mmm dd, YYYY") + 1];
+  spacing = width - 3 - strlen("Date:mmm dd, YYYY") - 1;
   time_t timer;
 
-  time(&timer);
-  wcsftime(date, strlen("mmm dd, YYYY"), L"%b %d, %Y", localtime(&timer));
-
+  
+  wmemset(space, 0, width - 3);
   wmemset(space, L' ', spacing);
+  wmemset(dateLine, 0, width + 3);
+  time(&timer);
+  wcsftime(date, strlen("mmm dd, YYYY") + 1, L"%b %d, %Y", localtime(&timer));
+  wprintf(L"%ls\n", date);
+
   wcscpy(dateLine, L"Date:");
   wcscat(dateLine, space);
   wcscat(dateLine, date);
 
-  fwprintf(fout, L"%ls\n%ls", authorLine, dateLine);
+  wprintf(L"%ls\n", dateLine);
+
+  fwprintf(fout, L"|%ls|\n|%ls|\n", authorLine, dateLine);
 
   return 0;
 }
